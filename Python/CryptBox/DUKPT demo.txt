@@ -1,0 +1,84 @@
+
+
+>>> bdk = '0123456789ABCDEFFEDCBA9876543210'
+>>> ksn = 'FFFF9876543210E00000'
+>>> ksnshift = 'FFFF9876543210E0'
+>>> keymask = 'C0C0C0C000000000C0C0C0C000000000'
+>>> bdkxor = xor (bdk, keymask)
+>>> iv = '0000000000000000'
+>>> bdkxor
+'c1e385a789abcdef3e1c7a5876543210'
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> IPEK_L=des3_enc(bdk, ksnshift, DES3.MODE_ECB, iv)
+>>> IPEK_R=des3_enc(bdkxor, ksnshift, DES3.MODE_ECB, iv)
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> IPEK = IPEK_L + IPEK_R
+>>> IPEK
+'6ac292faa1315b4d858ab3a3d7d5933a'
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> print IPEK
+6ac292faa1315b4d858ab3a3d7d5933a
+>>>
+>>>
+>>>
+>>> CurrentKeyL = IPEK_L
+>>> CurrentKeyR = IPEK_R
+>>>
+>>>
+>>>
+>>> keymasksmall = 'C0C0C0C000000000'
+>>> keyMaskedL=xor (CurrentKeyL, keymasksmall)
+>>> keyMaskedR=xor (CurrentKeyR, keymasksmall)
+>>> ksn_64='9876543210E00008'
+>>> returnKeyL=xor(keyMaskedR, des_enc(keyMaskedL, xor(keyMaskedR, ksn_64)))
+>>> returnKeyR=xor(CurrentKeyR, des_enc(CurrentKeyL, xor(CurrentKeyR, ksn_64)))
+>>> returnKey = returnKeyL + returnKeyR
+>>> SessionKey = xor(returnKey, '00000000000000FF00000000000000FF')
+>>>
+>>>
+>>>
+>>> SessionKey
+'27f66d5244ff621eaa6f6120edeb427f'
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> IPEK_L
+'6ac292faa1315b4d'
+>>> IPEK_R
+'858ab3a3d7d5933a'
+>>> bdk
+'0123456789ABCDEFFEDCBA9876543210'
+>>>
+>>> keyMaskedL
+'aa02523aa1315b4d'
+>>> keyMaskedR
+'454a7363d7d5933a'
+>>> returnKeyL
+'27f66d5244ff62e1'
+>>> returnKeyR
+'aa6f6120edeb4280'
+>>> returnKey
+'27f66d5244ff62e1aa6f6120edeb4280'
+>>> SessionKey
+'27f66d5244ff621eaa6f6120edeb427f'
